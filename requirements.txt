@@ -15,5 +15,5 @@ pyparsing
 requests
 ruamel.yaml
 ruamel.yaml.clib
-uritemplate=
+uritemplate
 urllib3
