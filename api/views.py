@@ -1,8 +1,5 @@
 from django.contrib.auth import get_user_model
-
-from rest_framework.authentication import SessionAuthentication, BasicAuthentication
-from rest_framework.permissions import IsAuthenticated
-from rest_framework import viewsets, mixins
+from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework.status import HTTP_201_CREATED, HTTP_400_BAD_REQUEST
 from rest_framework.views import APIView
@@ -16,7 +13,6 @@ User = get_user_model()
 
 
 class PostViewSet(viewsets.ModelViewSet):
-    #queryset = Post.objects.filter(reader_role='all')
     serializer_class = PostSerializer
     permission_classes = [OwnerOrReadOnly]
 
@@ -29,12 +25,6 @@ class PostViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
-
-class PostFollowViewSet(mixins.ListModelMixin,
-                        mixins.RetrieveModelMixin,
-                        viewsets.GenericViewSet):
-    queryset = Post.objects.filter(reader_role='follower')
-    serializer_class = PostSerializer
 
 
 class RegisterView(APIView):
@@ -54,4 +44,3 @@ class RegisterView(APIView):
             User.objects.create_user(**serializer.validated_data)
             return Response(status=HTTP_201_CREATED)
         return Response(status=HTTP_400_BAD_REQUEST, data={'errors': serializer.errors})
-
